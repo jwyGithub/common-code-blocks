@@ -55,18 +55,30 @@ function getFiles(cwd: string = process.cwd()): Array<{ fullpath: string; filena
     }, [] as Array<{ fullpath: string; filename: string }>);
 }
 
-function getDirsAndFiles(cwd: string = process.cwd()):{
-    files: { fullpath: string; filename: string }[],
-    dirs:{ fullpath: string; dirname: string }
+/**
+ * @description 获取所有的文件以及文件夹
+ * @param cwd
+ * @returns
+ */
+function getDirsAndFiles(cwd: string = process.cwd()): {
+    files: Array<{ fullpath: string; filename: string }>;
+    dirs: Array<{ fullpath: string; dirname: string }>;
 } {
     const dirs = fs.readdirSync(cwd);
-    return dirs.reduce((result, dir) => {
-        if (isFile(path.join(cwd, dir))) {
-            result.
+    return dirs.reduce(
+        (result, dir) => {
+            if (isFile(path.join(cwd, dir))) {
+                result.files = [...result.files, { fullpath: path.join(cwd, dir), filename: dir }];
+            }
+            if (isDirectory(path.join(cwd, dir))) {
+                result.dirs = [...result.dirs, { fullpath: path.join(cwd, dir), dirname: dir }];
+            }
+            return result;
+        },
+        { files: [], dirs: [] } as {
+            files: Array<{ fullpath: string; filename: string }>;
+            dirs: Array<{ fullpath: string; dirname: string }>;
         }
-        return result;
-    }, {});
+    );
 }
-
-console.log(getFiles());
 
